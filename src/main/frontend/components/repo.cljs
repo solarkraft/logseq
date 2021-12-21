@@ -20,6 +20,7 @@
             [frontend.state :as state]
             [frontend.ui :as ui]
             [frontend.util :as util]
+            [frontend.util.persist-var :as persist-var]
             [frontend.fs :as fs]
             [frontend.version :as version]
             [reitit.frontend.easy :as rfe]
@@ -42,7 +43,10 @@
     (route-handler/redirect-to-home!))
   (when-let [dir-name (config/get-repo-dir url)]
     (fs/watch-dir! dir-name))
-  (srs/update-cards-due-count!))
+  (srs/update-cards-due-count!)
+  ;; load persist-vars
+  (persist-var/load-vars))
+
 
 (defn- switch-repo-if-writes-finished?
   [url]
