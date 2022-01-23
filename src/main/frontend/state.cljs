@@ -112,7 +112,6 @@
       :editor/last-saved-cursor              nil
       :editor/editing?                       nil
       :editor/last-edit-block-input-id       nil
-      :editor/last-edit-block-id             nil
       :editor/in-composition?                false
       :editor/content                        {}
       :editor/block                          nil
@@ -676,7 +675,7 @@
 (defn get-edit-pos
   []
   (when-let [input (get-input)]
-    (.-selectionStart input)))
+    (util/get-selection-start input)))
 
 (defn set-selection-start-block!
   [start-block]
@@ -737,7 +736,7 @@
   (let [last-block (peek (vec (:selection/blocks @state)))]
     (swap! state assoc
            :selection/mode true
-           :selection/blocks (vec (pop (:selection/blocks @state))))
+           :selection/blocks (pop (vec (:selection/blocks @state))))
     last-block))
 
 (defn get-selection-direction

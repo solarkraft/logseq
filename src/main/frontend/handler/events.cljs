@@ -72,6 +72,7 @@
 
 (defmethod handle :graph/added [[_ repo]]
   (db/set-key-value repo :ast/version db-schema/ast-version)
+  (srs/update-cards-due-count!)
   (search-handler/rebuild-indices!))
 
 (defmethod handle :graph/migrated [[_ _repo]]

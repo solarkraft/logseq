@@ -425,7 +425,7 @@
                s (if (not= (util/safe-page-name-sanity-lc original-name) page-name-in-block)
                    page-name-in-block ;; page-name-in-block might be overrided (legacy)
                    original-name)
-               _ (when-not page-entity (js/console.warning "page-inner's page-entity is nil, given page-name: " page-name
+               _ (when-not page-entity (js/console.warn "page-inner's page-entity is nil, given page-name: " page-name
                                                          " page-name-in-block: " page-name-in-block))]
            (if tag? (str "#" s) s))))]))
 
@@ -2266,7 +2266,7 @@
        (dnd-separator-wrapper block block-id slide? true false))
 
      [:div.flex.flex-row.pr-2
-      {:class (if heading? "items-baseline" "")
+      {:class (if (and heading? (seq (:block/title block))) "items-baseline" "")
        :on-mouse-over (fn [e]
                         (block-mouse-over uuid e *control-show? block-id doc-mode?))
        :on-mouse-leave (fn [e]
