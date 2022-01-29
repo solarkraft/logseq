@@ -1604,3 +1604,11 @@
 (defn sub-collapsed
   [block-id]
   (sub [:ui/collapsed-blocks (get-current-repo) block-id]))
+
+(defn get-collapsed
+  [block-id]
+  (get @state [:ui/collapsed-blocks (get-current-repo) block-id]))
+
+(defn sub-collapsed-blocks
+  []
+  (sub [:ui/collapsed-blocks (get-current-repo)]))
