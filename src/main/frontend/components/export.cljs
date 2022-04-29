@@ -20,7 +20,7 @@
       (when (util/electron?)
         [:li.mb-4
          [:a.font-medium {:on-click #(export/export-repo-as-transit! current-repo)}
-          "Export public pages as Transit"]])
+          (t :export-transit)]])
       [:li.mb-4
        [:a.font-medium {:on-click #(export/export-repo-as-markdown! current-repo)}
         (t :export-markdown)]]
