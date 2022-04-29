@@ -101,6 +101,46 @@
           (.setAttribute anchor "download" "index.html")
           (.click anchor))))))
 
+(defn export-repo-as-transit!
+  [repo]
+  (when-let [db (db/get-db repo)]
+    (let [[db asset-filenames]           (if (state/all-pages-public?)
+                                           (db/clean-export! db)
+                                           (db/filter-only-public-pages-and-blocks db))
+          db-str       (db/db->string db) ; may be the transit string. for some reason this is empty??
+          ; probably not in the electron version, but would be interesting to see if this could work in the web version too ...
+          ; this is all we need. it really only works in the electron version. 
+          state        (select-keys @state/state
+                                    ;; [:ui/theme
+                                    ;;  :ui/sidebar-collapsed-blocks
+                                    ;;  :ui/show-recent?
+                                    ;;  :config]
+                                    ; -> window.logseq_state="{:config {\"local\" nil}}
+                        )
+          state        (update state :config (fn [config]
+                                               {"local" (get config repo)}))
+          raw-html-str (html/publishing-html db-str (pr-str state)); generated with db-str!
+          html-str     (str "data:text/html;charset=UTF-8,"
+                            (js/encodeURIComponent raw-html-str))]
+      
+      ; all of this only applies to electron stuff. but why is index.html still downloaded?
+      ; and what exactly is electron needed for? presumably the file access to get the assets?
+      ; yes. exportPublishAssets invokes ipcRenderer export-publish-assets, which hooks back into clojure.
+      ; but we alerady have the transit string, right?
+      (if (util/electron?)
+        (js/window.apis.exportPublishAssets
+         ; raw-html-str ; so does this include the logseq db? yes!
+         db-str
+         (config/get-custom-css-path)
+         (config/get-repo-dir repo)
+         (clj->js asset-filenames)
+         (util/mocked-open-dir-path))
+
+        (when-let [anchor (gdom/getElement "download-as-html")]
+          (.setAttribute anchor "href" html-str)
+          (.setAttribute anchor "download" "index.html")
+          (.click anchor))))))
+
 (defn- get-file-contents
   ([repo]
    (get-file-contents repo {:init-level 1}))
