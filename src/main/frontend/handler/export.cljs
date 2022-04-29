@@ -128,17 +128,19 @@
       ; yes. exportPublishAssets invokes ipcRenderer export-publish-assets, which hooks back into clojure.
       ; but we alerady have the transit string, right?
       (if (util/electron?)
-        (js/window.apis.exportPublishAssets
-         ; raw-html-str ; so does this include the logseq db? yes!
-         db-str
-         (config/get-custom-css-path)
-         (config/get-repo-dir repo)
-         (clj->js asset-filenames)
-         (util/mocked-open-dir-path))
+        ;; (js/window.apis.exportPublishAssets
+        ;;  ; raw-html-str ; so does this include the logseq db? yes!
+        ;;  db-str
+        ;;  (config/get-custom-css-path)
+        ;;  (config/get-repo-dir repo)
+        ;;  (clj->js asset-filenames)
+        ;;  (util/mocked-open-dir-path))
 
-        (when-let [anchor (gdom/getElement "download-as-html")]
-          (.setAttribute anchor "href" html-str)
-          (.setAttribute anchor "download" "index.html")
+        ; looks like this isn't effective when the electron one is?
+        (when-let [anchor (gdom/getElement "download-as-transit")]
+          (.setAttribute anchor "href" (str "data:text/html;charset=UTF-8,"
+                            (js/encodeURIComponent db-str)))
+          (.setAttribute anchor "download" "logseq.transit")
           (.click anchor))))))
 
 (defn- get-file-contents

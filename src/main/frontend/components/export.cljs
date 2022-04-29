@@ -37,6 +37,7 @@
        [:a.font-medium {:on-click #(export/export-repo-as-roam-json! current-repo)}
         (t :export-roam-json)]]]
      [:a#download-as-edn-v2.hidden]
+     [:a#download-as-transit.hidden]
      [:a#download-as-json-v2.hidden]
      [:a#download-as-roam-json.hidden]
      [:a#download-as-html.hidden]
